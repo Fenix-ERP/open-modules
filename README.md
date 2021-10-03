@@ -15,7 +15,11 @@ Open modules
 
 [//]: # (addons)
 
-This part will be replaced when running the oca-gen-addons-table script from OCA/maintainer-tools.
+Available addons
+----------------
+addon | version | summary
+--- | --- | ---
+[universal_discount](universal_discount/) | 14.0.1.1.0 | Universal Discount v14.0
 
 [//]: # (end addons)
 
