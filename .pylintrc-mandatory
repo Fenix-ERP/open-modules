@@ -12,6 +12,8 @@ valid_odoo_versions=14.0
 [MESSAGES CONTROL]
 disable=all
 
+ignore=ks_sale_order.py,ks_purchase_order.py
+
 enable=anomalous-backslash-in-string,
     api-one-deprecated,
     api-one-multi-together,
