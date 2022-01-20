@@ -6,7 +6,7 @@
     "version": "14.0.3.1.0",
     "author": "Open Source Integrators, Odoo Community Association (OCA)",
     "summary": "Assign overhead costs to activities, using Analytic Items",
-    "website": "https://github.com/OCA/account-analytic",
+    "website": "https://github.com/waalo-fenixdoo/open-modules",
     "license": "AGPL-3",
     "depends": ["account"],
     "category": "Accounting/Accounting",

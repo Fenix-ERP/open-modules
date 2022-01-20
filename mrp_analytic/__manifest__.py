@@ -14,7 +14,7 @@
     "José L. Sandoval A., "
     "Open Source Integrators, "
     "Odoo Community Association (OCA)",
-    "website": "https://github.com/OCA/account-analytic",
+    "website": "https://github.com/waalo-fenixdoo/open-modules",
     "license": "AGPL-3",
     "depends": ["mrp", "analytic", "stock_account"],
     "data": ["views/mrp_view.xml", "views/analytic_account_view.xml"],

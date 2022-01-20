@@ -8,7 +8,7 @@
     "version": "14.0.1.0.0",
     "author": "Open Source Integrators, Odoo Community Association (OCA)",
     "category": "Manufacturing",
-    "website": "https://github.com/OCA/account-analytic",
+    "website": "https://github.com/waalo-fenixdoo/open-modules",
     "license": "AGPL-3",
     "depends": ["mrp_analytic", "sale_project"],
     "installable": True,

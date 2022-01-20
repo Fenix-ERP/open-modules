@@ -6,7 +6,7 @@
     "version": "14.0.2.0.0",
     "author": "Open Source Integrators, Odoo Community Association (OCA)",
     "summary": "Track and report WIP and Variances based on Analytic Items",
-    "website": "https://github.com/OCA/account-analytic",
+    "website": "https://github.com/waalo-fenixdoo/open-modules",
     "license": "AGPL-3",
     "depends": ["stock_account"],
     "category": "Accounting/Accounting",
