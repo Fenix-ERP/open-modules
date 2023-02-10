@@ -1,6 +1,6 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
-
+from odoo.tools.misc import formatLang
 
 class KsGlobalDiscountInvoice(models.Model):
     # _inherit = "account.invoice"
@@ -29,6 +29,8 @@ class KsGlobalDiscountInvoice(models.Model):
     ks_enable_discount = fields.Boolean(compute="_compute_verify_discount")
     ks_sales_discount_account_id = fields.Integer(compute="_compute_verify_discount")
     ks_purchase_discount_account_id = fields.Integer(compute="_compute_verify_discount")
+    ks_total_amount = fields.Monetary(string='Total Amount', store=True, readonly=True, tracking=True,
+        compute='_compute_amount')
 
     @api.depends("company_id.ks_enable_discount")
     def _compute_verify_discount(self):
@@ -81,8 +83,39 @@ class KsGlobalDiscountInvoice(models.Model):
             elif not rec.ks_global_discount_type:
                 rec.ks_global_discount_rate = 0
                 rec.ks_amount_discount = 0
+            rec.ks_total_amount= (
+                rec.amount_untaxed
+            )
+            rec.amount_untaxed = (
+                rec.amount_untaxed - rec.ks_amount_discount
+            )
+            rec.amount_tax = (
+                rec.amount_tax - (rec.ks_amount_discount * 0.12)
+            )
+            rec._compute_invoice_taxes_by_group()
+            new_amount_by_group = []
+            for amount in rec.amount_by_group:
+                new_value = []
+                value = list(amount)
+                dis = rec.ks_amount_discount * 0.12
+                if 'IVA' in value[0]: 
+                    new_value.append(value[0])
+                    new_value.append(value[1] - dis)
+                    new_value.append(value[2])
+                    new_value.append(formatLang(self.env, value[1] - dis, currency_obj=rec.currency_id))
+                    new_value.append(value[4]) 
+                    new_value.append(value[5])
+                    new_value.append(value[6])           
+                    if isinstance(value,tuple):
+                        value = tuple(new_value)
+                    else:
+                        value = new_value
+                    new_amount_by_group.append(value)
+                else:
+                    new_amount_by_group.append(amount)
+            rec.amount_by_group = new_amount_by_group
             rec.amount_total = (
-                rec.amount_tax + rec.amount_untaxed - rec.ks_amount_discount
+                rec.amount_tax + rec.amount_untaxed
             )
             rec.ks_update_universal_discount()
 
@@ -127,6 +160,30 @@ class KsGlobalDiscountInvoice(models.Model):
                 lambda line: line.account_id.user_type_id.type
                 not in ("receivable", "payable")
             )
+            account_iva = self.line_ids.filtered(
+                lambda line: line.name and line.name.find("IVA") == 0
+            )
+            if account_iva and rec.ks_amount_discount > 0:
+                amount = rec.amount_tax*-1
+                if (
+                    (
+                        rec.move_type == "out_invoice" or rec.move_type == "out_refund"
+                    )
+                ):
+                    if rec.move_type == "out_invoice":
+                        account_iva.update(
+                            {
+                                "debit": amount > 0.0 and amount or 0.0,
+                                "credit": amount < 0.0 and -amount or 0.0,
+                            }
+                        )
+                    else:
+                        account_iva.update(
+                            {
+                                "debit": amount < 0.0 and -amount or 0.0,
+                                "credit": amount > 0.0 and amount or 0.0,
+                            }
+                        )            
             if already_exists:
                 amount = rec.ks_amount_discount
                 if (

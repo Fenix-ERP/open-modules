@@ -34,7 +34,11 @@
                         />
                     </div>
                 </xpath>
-                <xpath expr="//field[@name='amount_by_group']" position="after">
+                <xpath expr="//field[@name='amount_untaxed']" position="before">
+                    <field
+                        name="ks_total_amount"
+                        attrs="{'invisible':[('ks_enable_discount','!=',True),('ks_amount_discount','=',0)]}"
+                    />
                     <field
                         name="ks_amount_discount"
                         attrs="{'invisible':[('ks_enable_discount','!=',True),('ks_amount_discount','=',0)]}"
